@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Find Mentors{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Filter Mentors</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET">
+                    <div class="mb-3">
+                        <label for="skill" class="form-label">By Skill</label>
+                        <select class="form-select" id="skill" name="skill">
+                            <option value="">All Skills</option>
+                            {% for skill in skills %}
+                                <option value="{{ skill.id }}" {% if request.args.get('skill') == skill.id|string %}selected{% endif %}>{{ skill.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <h2>Available Mentors</h2>
+        
+        {% if mentors %}
+            <div class="row">
+                {% for mentor in mentors %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ mentor.name }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ mentor.skills|join(', ', attribute='skill.name') }}</h6>
+                                <p class="card-text">{{ mentor.bio|truncate(150) }}</p>
+                                <a href="{{ url_for('mentorship.send_request', mentor_id=mentor.id) }}" class="btn btn-primary">Request Mentorship</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">No mentors found matching your criteria.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

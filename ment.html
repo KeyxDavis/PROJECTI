@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Mentor Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Welcome, {{ current_user.name }}!</h2>
+        <p class="lead">Mentor Dashboard</p>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Upcoming Sessions</h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_sessions %}
+                    <div class="list-group">
+                        {% for session in upcoming_sessions %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">With {{ session.session_mentee.name }}</h6>
+                                    <small>{{ session.scheduled_time.strftime('%a, %b %d at %I:%M %p') }}</small>
+                                </div>
+                                <p class="mb-1">Duration: {{ session.duration }} minutes</p>
+                                <a href="{{ url_for('mentorship.session_feedback', session_id=session.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No upcoming sessions scheduled.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('mentorship.availability') }}" class="btn btn-primary w-100 mb-2">Set Availability</a>
+                <a href="{{ url_for('mentorship.received_requests') }}" class="btn btn-outline-primary w-100 mb-2">View Requests</a>
+                <a href="{{ url_for('profile.edit_profile') }}" class="btn btn-outline-secondary w-100">Edit Profile</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Stats</h5>
+            </div>
+            <div class="card-body">
+                <p>Total Sessions: {{ total_sessions }}</p>
+                <p>Pending Requests: {{ pending_requests }}</p>
+                <p>Average Rating: {{ average_rating|round(1) if average_rating else 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
